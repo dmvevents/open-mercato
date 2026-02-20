@@ -24,8 +24,8 @@ const geistMono = Geist_Mono({
 export async function generateMetadata(): Promise<Metadata> {
   const { t } = await resolveTranslations()
   return {
-    title: t('app.metadata.title', 'Open Mercato'),
-    description: t('app.metadata.description', 'AI‑supportive, modular ERP foundation for product & service companies'),
+    title: t('app.metadata.title', 'TSTT Marketplace'),
+    description: t('app.metadata.description', 'Your online marketplace for Trinidad and Tobago'),
     icons: {
       icon: "/open-mercato.svg",
     },

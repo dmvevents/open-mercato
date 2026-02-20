@@ -1,6 +1,6 @@
 {
   "onboarding": {
-    "title": "Create your Open Mercato workspace",
+    "title": "Create your TSTT Marketplace workspace",
     "subtitle": "Tell us a bit about you and we will set everything up.",
     "form": {
       "email": "Work email",
@@ -31,13 +31,13 @@
     },
     "email": {
       "subject": "Confirm your email to finish onboarding",
-      "preview": "Confirm your email to activate your Open Mercato workspace",
-      "heading": "Welcome to Open Mercato",
+      "preview": "Confirm your email to activate your TSTT Marketplace workspace",
+      "heading": "Welcome to TSTT Marketplace",
       "greeting": "Hi {firstName},",
       "body": "We just need to confirm your email address to finish setting up the organization {organizationName}.",
       "cta": "Confirm email & activate workspace",
       "expiry": "The link will expire in 24 hours. If you didn't request this, you can safely ignore this message.",
-      "footer": "Open Mercato · Tenant onboarding service",
+      "footer": "TSTT Marketplace · Tenant onboarding service",
       "adminSubject": "New self-service onboarding request",
       "adminPreview": "New onboarding request submitted",
       "adminHeading": "New onboarding request",
