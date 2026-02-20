@@ -9,6 +9,8 @@ bootstrap()
 import { ThemeProvider, FrontendLayout, QueryProvider, AuthFooter } from '@open-mercato/ui'
 import { ClientBootstrapProvider } from '@/components/ClientBootstrap'
 import { GlobalNoticeBars } from '@/components/GlobalNoticeBars'
+import { CartProvider } from '@/components/storefront/CartProvider'
+import { CartDrawer } from '@/components/storefront/CartDrawer'
 import { detectLocale, loadDictionary, resolveTranslations } from '@open-mercato/shared/lib/i18n/server'
 
 const geistSans = Geist({
@@ -64,7 +66,10 @@ export default async function RootLayout({
           <ClientBootstrapProvider>
             <ThemeProvider>
               <QueryProvider>
-                <FrontendLayout footer={<AuthFooter />}>{children}</FrontendLayout>
+                <CartProvider>
+                  <FrontendLayout footer={<AuthFooter />}>{children}</FrontendLayout>
+                  <CartDrawer />
+                </CartProvider>
                 <GlobalNoticeBars demoModeEnabled={demoModeEnabled} />
               </QueryProvider>
             </ThemeProvider>
