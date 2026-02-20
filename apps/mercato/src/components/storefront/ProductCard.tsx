@@ -2,6 +2,7 @@
 
 import { ShoppingCart } from 'lucide-react'
 import Image from 'next/image'
+import Link from 'next/link'
 import { useCart } from './CartProvider'
 import type { StorefrontProduct } from './types'
 
@@ -31,35 +32,39 @@ export function ProductCard({ product }: { product: StorefrontProduct }) {
 
   return (
     <div className="group flex flex-col rounded-lg border border-border bg-card overflow-hidden transition-all hover:shadow-lg">
-      <div className="relative aspect-square overflow-hidden bg-muted">
-        {product.defaultMediaUrl ? (
-          <Image
-            src={product.defaultMediaUrl}
-            alt={product.title}
-            fill
-            className="object-cover transition-transform group-hover:scale-105"
-            sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
-          />
-        ) : (
-          <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-muted to-muted/60">
-            <span className="text-3xl font-bold text-muted-foreground/30">
-              {product.title.charAt(0)}
+      <Link href={product.handle ? `/shop/${product.handle}` : '#'} className="contents">
+        <div className="relative aspect-square overflow-hidden bg-muted cursor-pointer">
+          {product.defaultMediaUrl ? (
+            <Image
+              src={product.defaultMediaUrl}
+              alt={product.title}
+              fill
+              className="object-cover transition-transform group-hover:scale-105"
+              sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+            />
+          ) : (
+            <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-muted to-muted/60">
+              <span className="text-3xl font-bold text-muted-foreground/30">
+                {product.title.charAt(0)}
+              </span>
+            </div>
+          )}
+        </div>
+
+        <div className="flex flex-col p-4 pb-0">
+          {product.categoryName && (
+            <span className="text-xs font-medium text-primary mb-1 uppercase tracking-wide">
+              {product.categoryName}
             </span>
-          </div>
-        )}
-      </div>
+          )}
 
-      <div className="flex flex-1 flex-col p-4">
-        {product.categoryName && (
-          <span className="text-xs font-medium text-primary mb-1 uppercase tracking-wide">
-            {product.categoryName}
-          </span>
-        )}
+          <h3 className="text-sm font-semibold text-foreground line-clamp-2 mb-2">
+            {product.title}
+          </h3>
+        </div>
+      </Link>
 
-        <h3 className="text-sm font-semibold text-foreground line-clamp-2 mb-2">
-          {product.title}
-        </h3>
-
+      <div className="flex flex-1 flex-col px-4 pb-4">
         <div className="mt-auto flex items-baseline gap-2 mb-3">
           <span className="text-lg font-bold text-foreground">
             {formatPrice(displayPrice, currency)}
