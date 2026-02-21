@@ -5,7 +5,8 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { ShoppingCart, Plus, Minus, ChevronRight } from 'lucide-react'
 import { useCart } from '@/components/storefront/CartProvider'
-import type { StorefrontProduct, StorefrontVariant } from '@/components/storefront/types'
+import { PlanSelector } from '@/components/storefront/PlanSelector'
+import { POSTPAID_PLANS, type StorefrontProduct, type StorefrontVariant } from '@/components/storefront/types'
 
 interface ProductDetailClientProps {
   product: StorefrontProduct
@@ -16,6 +17,7 @@ export function ProductDetailClient({ product, imageMap }: ProductDetailClientPr
   const { addItem } = useCart()
   const [quantity, setQuantity] = useState(1)
   const [added, setAdded] = useState(false)
+  const [selectedPlanId, setSelectedPlanId] = useState('phone-only')
 
   const defaultVariant = product.variants.find((v) => v.isDefault) ?? product.variants[0] ?? null
 
@@ -49,14 +51,24 @@ export function ProductDetailClient({ product, imageMap }: ProductDetailClientPr
   const originalPrice = selectedVariant?.regularPrice ?? product.regularPrice ?? null
   const hasSale = originalPrice !== null && originalPrice > activePrice
   const currencyCode = selectedVariant?.currencyCode ?? product.currencyCode ?? 'TTD'
-  const monthlyPayment = activePrice > 0 ? (activePrice / 3).toFixed(2) : null
+  const selectedPlan = POSTPAID_PLANS.find(p => p.id === selectedPlanId) ?? null
+  const commitmentValue = selectedPlan?.commitmentValue ?? 0
+  const bundlePrice = activePrice + commitmentValue
+
+  const monthlyPayment = useMemo(() => {
+    if (bundlePrice <= 0) return null
+    const r = 0.0125 // 1.25% monthly interest
+    const n = commitmentValue > 0 ? 8 : 6 // 8-month term for bundles
+    const payment = bundlePrice * (r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1)
+    return payment.toFixed(2)
+  }, [bundlePrice, commitmentValue])
 
   const currentImages = useMemo(() => {
     const colorValue = selectedOptions.Color ?? selectedOptions.color ?? null
     if (colorValue && imageMap[colorValue]) return imageMap[colorValue]
     if (imageMap['_default']) return imageMap['_default']
     const firstKey = Object.keys(imageMap)[0]
-    return firstKey ? imageMap[firstKey] : ['/examples/atlas-runner-midnight-1.png']
+    return firstKey ? imageMap[firstKey] : []
   }, [selectedOptions, imageMap])
 
   const [activeImageIndex, setActiveImageIndex] = useState(0)
@@ -77,6 +89,10 @@ export function ProductDetailClient({ product, imageMap }: ProductDetailClientPr
       currencyCode,
       imageUrl: currentImages[0] ?? product.defaultMediaUrl,
       handle: product.handle,
+      planId: selectedPlan ? selectedPlan.id : null,
+      planName: selectedPlan ? selectedPlan.name : null,
+      planPrice: commitmentValue,
+      itemType: selectedPlan ? 'device-bundle' : 'device',
     })
     setAdded(true)
     setTimeout(() => setAdded(false), 2000)
@@ -214,6 +230,34 @@ export function ProductDetailClient({ product, imageMap }: ProductDetailClientPr
               </div>
             )}
 
+            <PlanSelector
+              selectedPlanId={selectedPlanId}
+              onSelect={setSelectedPlanId}
+              phonePrice={activePrice}
+              currencyCode={currencyCode}
+            />
+
+            {selectedPlan && (
+              <div className="rounded-md border border-border bg-muted/30 p-3 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Phone</span>
+                  <span className="text-foreground">{currencyCode} ${activePrice.toLocaleString()}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">{selectedPlan.name}</span>
+                  <span className="text-foreground">+ {currencyCode} ${commitmentValue.toLocaleString()}</span>
+                </div>
+                <div className="flex justify-between text-xs text-muted-foreground">
+                  <span>Monthly service</span>
+                  <span>${selectedPlan.monthlyPrice}/mo</span>
+                </div>
+                <div className="flex justify-between border-t border-border mt-2 pt-2 font-semibold">
+                  <span className="text-foreground">Bundle Total</span>
+                  <span className="text-foreground">{currencyCode} ${bundlePrice.toLocaleString()}</span>
+                </div>
+              </div>
+            )}
+
             <div>
               <p className="mb-2 text-sm font-medium text-foreground">Quantity</p>
               <div className="inline-flex items-center rounded-md border border-border">
@@ -256,7 +300,7 @@ export function ProductDetailClient({ product, imageMap }: ProductDetailClientPr
                   <span className="font-medium text-primary">
                     {currencyCode} ${monthlyPayment}/mo
                   </span>{' '}
-                  with TSTT MicroLoan
+                  for {commitmentValue > 0 ? '8' : '6'} months with TSTT MicroLoan
                 </p>
               )}
             </div>

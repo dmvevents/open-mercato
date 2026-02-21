@@ -1,15 +1,26 @@
+import Link from 'next/link'
+
 export function Footer() {
   return (
     <footer className="mt-auto border-t border-border">
       <div className="h-1 bg-primary" />
       <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
         <div className="flex flex-col items-center gap-6 sm:flex-row sm:justify-between">
-          <div className="flex items-baseline gap-1 text-lg font-bold tracking-tight">
+          <Link href="/" className="flex items-baseline gap-1 text-lg font-bold tracking-tight">
             <span className="text-primary">TSTT</span>
             <span className="text-foreground">Marketplace</span>
-          </div>
+          </Link>
 
           <nav className="flex flex-wrap justify-center gap-6">
+            <Link href="/shop" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+              Phones
+            </Link>
+            <Link href="/plans" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+              Plans
+            </Link>
+            <Link href="/plans#prepaid" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+              Prepaid
+            </Link>
             <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
               About
             </a>

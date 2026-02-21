@@ -5,6 +5,12 @@ import Link from 'next/link'
 import { useState } from 'react'
 import { useCart } from './CartProvider'
 
+const NAV_LINKS = [
+  { label: 'Phones', href: '/shop' },
+  { label: 'Plans', href: '/plans' },
+  { label: 'Deals', href: '/shop?deals=true' },
+]
+
 export function NavBar() {
   const { itemCount, setIsOpen } = useCart()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -13,11 +19,23 @@ export function NavBar() {
     <nav className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between gap-4">
-          <div className="flex items-center gap-2 shrink-0">
+          <div className="flex items-center gap-6 shrink-0">
             <Link href="/" className="flex items-baseline gap-1 text-xl font-bold tracking-tight">
               <span className="text-primary">TSTT</span>
               <span className="text-foreground">Marketplace</span>
             </Link>
+
+            <div className="hidden sm:flex items-center gap-1">
+              {NAV_LINKS.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className="rounded-md px-3 py-1.5 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </div>
           </div>
 
           <div className="hidden sm:flex flex-1 max-w-xl mx-4">
@@ -57,6 +75,18 @@ export function NavBar() {
 
         {mobileMenuOpen && (
           <div className="border-t border-border pb-4 sm:hidden">
+            <div className="flex flex-col gap-1 py-2">
+              {NAV_LINKS.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="rounded-md px-3 py-2 text-sm font-medium text-foreground hover:bg-muted transition-colors"
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </div>
             <div className="relative mt-3">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
               <input
