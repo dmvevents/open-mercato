@@ -27,6 +27,10 @@ export function ProductCard({ product }: { product: StorefrontProduct }) {
       currencyCode: currency,
       imageUrl: product.defaultMediaUrl,
       handle: product.handle,
+      planId: null,
+      planName: null,
+      planPrice: 0,
+      itemType: 'device',
     })
   }
 
@@ -65,7 +69,7 @@ export function ProductCard({ product }: { product: StorefrontProduct }) {
       </Link>
 
       <div className="flex flex-1 flex-col px-4 pb-4">
-        <div className="mt-auto flex items-baseline gap-2 mb-3">
+        <div className="mt-auto flex items-baseline gap-2 mb-1">
           <span className="text-lg font-bold text-foreground">
             {formatPrice(displayPrice, currency)}
           </span>
@@ -75,6 +79,20 @@ export function ProductCard({ product }: { product: StorefrontProduct }) {
             </span>
           )}
         </div>
+
+        {displayPrice >= 3000 && (
+          <p className="text-xs text-muted-foreground mb-3">
+            from {currency} ${(() => {
+              const bundlePrice = displayPrice + 3500 // Standard plan
+              const r = 0.0125
+              const n = 8
+              const pmt = bundlePrice * (r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1)
+              return pmt.toFixed(0)
+            })()}/mo with 2-Year Plan
+          </p>
+        )}
+
+        {displayPrice < 3000 && <div className="mb-3" />}
 
         <button
           onClick={handleAddToCart}
