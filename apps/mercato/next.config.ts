@@ -3,6 +3,14 @@ import path from "node:path";
 
 const nextConfig: NextConfig = {
   distDir: '.mercato/next',
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+      },
+    ],
+  },
   experimental: {
     serverMinification: false,
     turbopackMinify: false,
